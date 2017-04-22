@@ -23,9 +23,17 @@ This implementation is based on the journal edition of the original paper, and g
 * GCC (>= 4.8.2)
 * Python (>= 3.4.3)
     * For required packages, see `requirements.txt`
-* Boost (>= 1.58.0) built with python support
-* [Boost.NumPy](https://github.com/ndarray/Boost.NumPy)
-    * If you got an error to build, see [belltailjp/Boost.NumPy](https://github.com/belltailjp/Boost.NumPy))
+* Boost (= 1.64.0) built with python support (Tested only with 1.64.0)
+    * Modify user-config.jam
+       * location: /boost_1_57_0/tools/build/example/user-config.jam
+       * modification: using python : 3.5 : /usr/bin/python3 : /usr/include/python3.5 : /usr/lib ;
+       * move file to user home or BOOST_BUILD_PATH, refer to http://www.boost.org/build/doc/html/bbv2/overview/configuration.html
+       * ./bootstrap.sh --prefix=/usr/local/
+       * ./bootstrap.sh --with-python=/usr/bin/python3 --with-python-version=3.5 --with-python-root=/usr/lib/python3.5
+       * sudo ./b2 --enable-unicode=ucs4 install
+       
+       
+
 
 In addition, this is only tested on x64 Linux environment.
 
@@ -35,13 +43,15 @@ In addition, this is only tested on x64 Linux environment.
 This implementation contains a few C++ code which wraps the Efficient Graph-Based Image Segmentation [[4]](#segmentation) used for generating an initial value.
 It works as a python module, so build it first.
 
-```sh
-% git clone https://github.com/belltailjp/selective_search_py.git
-% cd selective_search_py
-% wget http://cs.brown.edu/~pff/segment/segment.zip; unzip segment.zip; rm segment.zip
-% cmake .
-% make
-```
+
+
+* git clone 
+* cd selective_search_py
+* export CPLUS_INCLUDE_PATH=/usr/include/python3.5
+* cmake .
+* make
+* export LD_LIBRARY_PATH=/usr/local/lib/
+
 
 Then you will see a shared object `segment.so` in the directory.
 Keep it on the same directory of main Python script, or referrable location described in `LD_LIBRARY_PATH`.
@@ -54,7 +64,7 @@ Keep it on the same directory of main Python script, or referrable location desc
 *showcandidate* demo allows you to interactively see the result of selective search.
 
 ```sh
-% ./demo_showcandidates.py image.jpg
+% ./demo_showcandidates.py -i image.jpg
 ```
 
 ![showcandidate GUI example](doc/showcandidates_scr.png)
